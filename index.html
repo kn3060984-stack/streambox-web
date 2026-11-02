@@ -1,213 +1,361 @@
 <!DOCTYPE html>
 <html lang="hi">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>StreamBox TV</title>
-  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-    body { background: #08080a; color: #ffffff; padding: 20px; text-align: center; }
-    h1 { color: #00ffcc; text-shadow: 0 0 10px rgba(0,255,204,0.4); margin-bottom: 5px; font-size: 26px; }
-    p.subtitle { color: #888; font-size: 14px; margin-bottom: 20px; }
-    
-    /* प्लेयर स्क्रीन */
-    .screen-container {
-      max-width: 900px;
-      margin: 0 auto 25px auto;
-      background: #000;
-      border: 2px solid #1a1a24;
-      border-radius: 12px;
-      overflow: hidden;
-      box-shadow: 0 0 20px rgba(0,0,0,0.8);
-    }
-    .video-frame {
-      width: 100%;
-      height: 480px;
-      border: none;
-      display: block;
-      background: #000;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StreamBox TV - Cyber Neon Edition</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#07090e">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            user-select: none;
+        }
 
-    /* मूवी कार्ड्स ग्रिड */
-    .media-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-      gap: 15px;
-      max-width: 900px;
-      margin: 0 auto;
-    }
-    .card {
-      background: #12131a;
-      border: 1px solid #232433;
-      border-radius: 8px;
-      padding: 12px;
-      cursor: pointer;
-      transition: transform 0.2s, border-color 0.2s;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-    }
-    .card:hover, .card:focus {
-      transform: translateY(-4px);
-      border-color: #00ffcc;
-      outline: none;
-    }
-    .card h3 { font-size: 15px; margin-bottom: 6px; color: #fff; }
-    .badges { display: flex; justify-content: center; gap: 6px; }
-    .badge {
-      font-size: 11px;
-      padding: 2px 6px;
-      border-radius: 4px;
-      background: #1f2233;
-      color: #00ffcc;
-      border: 1px solid rgba(0,255,204,0.3);
-    }
-    .badge.red { color: #ff3366; border-color: rgba(255,51,102,0.3); }
+        body {
+            background-color: #07090e;
+            background-image: 
+                radial-gradient(circle at 50% 0%, rgba(0, 243, 255, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(255, 0, 128, 0.1) 0%, transparent 40%),
+                linear-gradient(180deg, #07090e 0%, #0d111a 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            padding: 30px 20px;
+            text-align: center;
+            overflow-x: hidden;
+        }
 
-    /* कस्टम यूआरएल बॉक्स */
-    .custom-bar {
-      margin-top: 30px;
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-      max-width: 700px;
-      margin-inline: auto;
-    }
-    input {
-      flex: 1;
-      padding: 10px 14px;
-      background: #12131a;
-      border: 1px solid #232433;
-      border-radius: 6px;
-      color: #fff;
-      outline: none;
-    }
-    button {
-      padding: 10px 20px;
-      background: #00ffcc;
-      color: #000;
-      border: none;
-      font-weight: bold;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-  </style>
+        /* हेडर स्टाइल - नियॉन ग्लो */
+        header {
+            margin-bottom: 35px;
+        }
+
+        h1 {
+            font-size: 34px;
+            font-weight: 800;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #ffffff;
+            text-shadow: 0 0 10px #00f3ff, 0 0 20px #00f3ff, 0 0 40px #0088ff;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: #ff007f;
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            text-shadow: 0 0 8px rgba(255, 0, 127, 0.7);
+        }
+
+        /* क्विक सर्च/डायरेक्ट यूआरएल बार */
+        .custom-bar {
+            max-width: 750px;
+            margin: 0 auto 35px auto;
+            display: flex;
+            gap: 12px;
+            background: rgba(18, 24, 36, 0.85);
+            padding: 10px;
+            border-radius: 12px;
+            border: 1px solid rgba(0, 243, 255, 0.3);
+            box-shadow: 0 0 20px rgba(0, 243, 255, 0.1);
+        }
+
+        .custom-bar input {
+            flex: 1;
+            padding: 12px 16px;
+            background: #07090e;
+            border: 1px solid #1f2a3c;
+            color: #00f3ff;
+            border-radius: 8px;
+            font-size: 15px;
+            outline: none;
+            transition: all 0.25s;
+        }
+
+        .custom-bar input:focus {
+            border-color: #00f3ff;
+            box-shadow: 0 0 12px rgba(0, 243, 255, 0.5);
+        }
+
+        .custom-bar button {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #00f3ff, #0077ff);
+            border: none;
+            color: #000;
+            font-weight: 800;
+            font-size: 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: all 0.25s;
+            box-shadow: 0 0 15px rgba(0, 243, 255, 0.4);
+        }
+
+        .custom-bar button:hover,
+        .custom-bar button:focus {
+            transform: scale(1.05);
+            background: linear-gradient(135deg, #ff007f, #7928ca);
+            color: #fff;
+            box-shadow: 0 0 20px rgba(255, 0, 127, 0.8);
+            outline: none;
+        }
+
+        /* मूवी कार्ड्स ग्रिड */
+        .media-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 24px;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        /* नियॉन गेमिंग कार्ड */
+        .card {
+            background: rgba(16, 22, 34, 0.9);
+            border: 2px solid rgba(0, 243, 255, 0.25);
+            border-radius: 16px;
+            padding: 24px 18px;
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.6);
+        }
+
+        /* टीवी रिमोट या माउस सेलेक्ट होने पर नियॉन इफेक्ट */
+        .card:hover,
+        .card:focus {
+            transform: translateY(-8px) scale(1.04);
+            border-color: #00f3ff;
+            box-shadow: 0 0 25px rgba(0, 243, 255, 0.6), inset 0 0 15px rgba(0, 243, 255, 0.2);
+            outline: none;
+        }
+
+        .card.active-link {
+            border-color: rgba(0, 255, 136, 0.4);
+        }
+
+        .card.active-link:hover,
+        .card.active-link:focus {
+            border-color: #00ff88;
+            box-shadow: 0 0 28px rgba(0, 255, 136, 0.7), inset 0 0 15px rgba(0, 255, 136, 0.2);
+        }
+
+        .card-icon {
+            font-size: 36px;
+            margin-bottom: 12px;
+            filter: drop-shadow(0 0 8px rgba(0, 243, 255, 0.6));
+        }
+
+        .card h3 {
+            font-size: 20px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 12px;
+            letter-spacing: 0.5px;
+        }
+
+        .badges {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 18px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .badge {
+            font-size: 11px;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 6px;
+            background: rgba(0, 243, 255, 0.12);
+            color: #00f3ff;
+            border: 1px solid rgba(0, 243, 255, 0.35);
+            text-transform: uppercase;
+        }
+
+        .badge.pink {
+            background: rgba(255, 0, 127, 0.15);
+            color: #ff3399;
+            border-color: rgba(255, 0, 127, 0.4);
+        }
+
+        .badge.green {
+            background: rgba(0, 255, 136, 0.15);
+            color: #00ff88;
+            border-color: rgba(0, 255, 136, 0.4);
+        }
+
+        .play-btn {
+            width: 100%;
+            padding: 10px 0;
+            border-radius: 8px;
+            background: rgba(0, 243, 255, 0.15);
+            color: #00f3ff;
+            font-weight: 700;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border: 1px solid rgba(0, 243, 255, 0.4);
+            transition: all 0.2s;
+        }
+
+        .card:hover .play-btn,
+        .card:focus .play-btn {
+            background: #00f3ff;
+            color: #000000;
+            box-shadow: 0 0 15px #00f3ff;
+        }
+
+        .card.active-link .play-btn {
+            background: rgba(0, 255, 136, 0.15);
+            color: #00ff88;
+            border-color: rgba(0, 255, 136, 0.5);
+        }
+
+        .card.active-link:hover .play-btn,
+        .card.active-link:focus .play-btn {
+            background: #00ff88;
+            color: #000000;
+            box-shadow: 0 0 15px #00ff88;
+        }
+
+        footer {
+            margin-top: 50px;
+            color: #5c6b82;
+            font-size: 12px;
+        }
+    </style>
 </head>
 <body>
 
-  <h1>⚡ StreamBox TV Console</h1>
-  <p class="subtitle">एंटी-पॉपअप और डायरेक्ट स्ट्रीम सपोर्ट</p>
+    <header>
+        <h1>⚡ StreamBox Cyber TV</h1>
+        <div class="subtitle">One-Click Direct Movie Launcher • TV Remote Ready</div>
+    </header>
 
-  <div class="screen-container" id="playerContainer">
-    <div style="height:480px; display:flex; align-items:center; justify-content:center; color:#555;">
-      नीचे दी गई सूची में से टाइटल चुनें
-    </div>
-  </div>
-
-  <div class="media-grid">
-    <div class="card" tabindex="0" onclick="playSelected('hanuman')">
-      <h3>हनुमान अंश</h3>
-      <div class="badges">
-        <span class="badge">1080p</span>
-        <span class="badge red">Hindi/Multi</span>
-      </div>
+    <!-- कोई भी अन्य डायरेक्ट लिंक तुरंत खोलने के लिए -->
+    <div class="custom-bar">
+        <input type="text" id="manualUrl" placeholder="यहाँ कोई भी डायरेक्ट मूवी लिंक पेस्ट करें...">
+        <button onclick="openCustomLink()">सीधे खोलें 🚀</button>
     </div>
 
-    <div class="card" tabindex="0" onclick="playSelected('narsimha')">
-      <h3>महा अवतार नरसिम्हा</h3>
-      <div class="badges">
-        <span class="badge">1080p</span>
-        <span class="badge red">Hindi/Multi</span>
-      </div>
+    <!-- मूवी कार्ड्स की लिस्ट -->
+    <div class="media-grid">
+
+        <!-- 1. Jailer 2 (आपका लिंक इसमें जुड़ा हुआ है) -->
+        <div class="card active-link" tabindex="0" onclick="launchMovie('jailer2')" onkeydown="handleKey(event, 'jailer2')">
+            <div class="card-icon">🔥</div>
+            <h3>जेलर 2 (Jailer 2)</h3>
+            <div class="badges">
+                <span class="badge green">READY</span>
+                <span class="badge">1080p</span>
+                <span class="badge pink">Multi Audio</span>
+            </div>
+            <div class="play-btn">▶ अभी चलाएं (Direct)</div>
+        </div>
+
+        <!-- 2. हनुमान अंश -->
+        <div class="card" tabindex="0" onclick="launchMovie('hanuman')" onkeydown="handleKey(event, 'hanuman')">
+            <div class="card-icon">🎬</div>
+            <h3>हनुमान अंश</h3>
+            <div class="badges">
+                <span class="badge">1080p</span>
+                <span class="badge pink">Hindi</span>
+            </div>
+            <div class="play-btn">▶ अभी चलाएं (Direct)</div>
+        </div>
+
+        <!-- 3. महा अवतार नरसिम्हा -->
+        <div class="card" tabindex="0" onclick="launchMovie('narsimha')" onkeydown="handleKey(event, 'narsimha')">
+            <div class="card-icon">🦁</div>
+            <h3>महा अवतार नरसिम्हा</h3>
+            <div class="badges">
+                <span class="badge">1080p</span>
+                <span class="badge pink">Hindi/Multi</span>
+            </div>
+            <div class="play-btn">▶ अभी चलाएं (Direct)</div>
+        </div>
+
+        <!-- 4. Alice in Borderland -->
+        <div class="card" tabindex="0" onclick="launchMovie('alice')" onkeydown="handleKey(event, 'alice')">
+            <div class="card-icon">🃏</div>
+            <h3>Alice in Borderland</h3>
+            <div class="badges">
+                <span class="badge">1080p</span>
+                <span class="badge pink">Dual Audio</span>
+            </div>
+            <div class="play-btn">▶ अभी चलाएं (Direct)</div>
+        </div>
+
+        <!-- 5. Wednesday -->
+        <div class="card" tabindex="0" onclick="launchMovie('wednesday')" onkeydown="handleKey(event, 'wednesday')">
+            <div class="card-icon">🕷️</div>
+            <h3>Wednesday</h3>
+            <div class="badges">
+                <span class="badge">1080p</span>
+                <span class="badge pink">Dual Audio</span>
+            </div>
+            <div class="play-btn">▶ अभी चलाएं (Direct)</div>
+        </div>
+
     </div>
 
-    <div class="card" tabindex="0" onclick="playSelected('jailer2')">
-      <h3>जेलर 2</h3>
-      <div class="badges">
-        <span class="badge">1080p</span>
-        <span class="badge red">Multi</span>
-      </div>
-    </div>
+    <footer>
+        टिप: टीवी पर एड्स रोकने के लिए टीवी की Wi-Fi सेटिंग्स में DNS: 94.140.14.14 सेट करें।
+    </footer>
 
-    <div class="card" tabindex="0" onclick="playSelected('alice')">
-      <h3>Alice in Borderland</h3>
-      <div class="badges">
-        <span class="badge">1080p</span>
-        <span class="badge">Dual Audio</span>
-      </div>
-    </div>
+    <script>
+        // =========================================================================
+        // 🔑 MEDIA VAULT: यहाँ अपनी मूवीज़ के डायरेक्ट लिंक पेस्ट करें
+        // =========================================================================
+        const mediaVault = {
+            jailer2: "https://hdstream4u.com/file/fuiqbdbnwg5d",
+            hanuman: "YOUR_HANUMAN_ANSH_LINK_HERE",
+            narsimha: "YOUR_NARSIMHA_LINK_HERE",
+            alice: "YOUR_ALICE_IN_BORDERLAND_LINK_HERE",
+            wednesday: "YOUR_WEDNESDAY_LINK_HERE"
+        };
 
-    <div class="card" tabindex="0" onclick="playSelected('wednesday')">
-      <h3>Wednesday</h3>
-      <div class="badges">
-        <span class="badge">1080p</span>
-        <span class="badge">Dual Audio</span>
-      </div>
-    </div>
-  </div>
+        // वन-क्लिक डायरेक्ट रीडायरेक्ट फंक्शन
+        function launchMovie(key) {
+            const targetUrl = mediaVault[key];
 
-  <!-- कोई अन्य लिंक तुरंत चलाने के लिए -->
-  <div class="custom-bar">
-    <input type="text" id="manualUrl" placeholder="अन्य डायरेक्ट वीडियो / एम्बेड लिंक डालें...">
-    <button onclick="playCustom()">चलाएं</button>
-  </div>
+            if (!targetUrl || targetUrl.startsWith("YOUR_")) {
+                alert("बॉस, इस मूवी का लिंक अभी mediaVault में पेस्ट नहीं किया गया है!");
+                return;
+            }
 
-  <script>
-    // यहाँ अपने जुटाए गए डायरेक्ट वीडियो या एम्बेड लिंक्स पेस्ट करें:
-    const mediaVault = {
-      hanuman: "YOUR_HANUMAN_ANSH_LINK_HERE",
-      narsimha: "YOUR_NARSIMHA_LINK_HERE",
-      jailer2: "https://hdstream4u.com/file/fuiqbdbnwg5d",
-      alice: "YOUR_ALICE_IN_BORDERLAND_LINK_HERE",
-      wednesday: "YOUR_WEDNESDAY_LINK_HERE"
-    };
-
-    function renderPlayer(streamUrl) {
-      const container = document.getElementById('playerContainer');
-
-      // 1. अगर डायरेक्ट HLS (.m3u8) फाइल लिंक है:
-      if (streamUrl.includes('.m3u8')) {
-        container.innerHTML = '<video id="videoCore" class="video-frame" controls autoplay></video>';
-        const video = document.getElementById('videoCore');
-        if (Hls.isSupported()) {
-          const hls = new Hls();
-          hls.loadSource(streamUrl);
-          hls.attachMedia(video);
-        } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-          video.src = streamUrl;
+            // सीधे उसी टैब में मूवी पेज खोल देगा
+            window.location.href = targetUrl;
         }
-      } 
-      // 2. अगर डायरेक्ट MP4 फाइल लिंक है:
-      else if (streamUrl.includes('.mp4') || streamUrl.includes('.mkv')) {
-        container.innerHTML = `<video class="video-frame" controls autoplay src="${streamUrl}"></video>`;
-      } 
-      // 3. अगर किसी साइट का एम्बेड प्लेयर लिंक है (पॉपअप रोकने वाला सैंडबॉक्स):
-      else {
-        container.innerHTML = `
-          <iframe 
-            class="video-frame" 
-            src="${streamUrl}" 
-            sandbox="allow-scripts allow-same-origin allow-forms allow-presentation" 
-            allow="autoplay; encrypted-media; fullscreen" 
-            allowfullscreen>
-          </iframe>`;
-      }
-    }
 
-    function playSelected(key) {
-      const url = mediaVault[key];
-      if (!url || url.startsWith("YOUR_")) {
-        alert("कृपया पहले कोड में इस टाइटल का लिंक जोड़ें।");
-        return;
-      }
-      renderPlayer(url);
-    }
+        // कस्टम बॉक्स से लिंक खोलने का फंक्शन
+        function openCustomLink() {
+            const inputUrl = document.getElementById("manualUrl").value.trim();
+            if (!inputUrl) {
+                alert("कृपया पहले बॉक्स में कोई लिंक डालें!");
+                return;
+            }
+            window.location.href = inputUrl;
+        }
 
-    function playCustom() {
-      const input = document.getElementById('manualUrl').value.trim();
-      if (input) renderPlayer(input);
-    }
-  </script>
+        // टीवी रिमोट के 'OK' / 'Enter' बटन का सपोर्ट
+        function handleKey(event, key) {
+            if (event.key === "Enter" || event.keyCode === 13) {
+                launchMovie(key);
+            }
+        }
+    </script>
+
 </body>
 </html>
