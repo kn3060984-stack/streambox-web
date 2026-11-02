@@ -3,639 +3,211 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>StreamBox - Watch Movies, Web Series & Anime</title>
-  <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#e50914">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-  
+  <title>StreamBox TV</title>
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
   <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: 'Poppins', sans-serif;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    body {
-      background-color: #0f1014;
-      color: #ffffff;
-      overflow-x: hidden;
-      min-height: 100vh;
-    }
-
-    /* Header & Navigation */
-    header {
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: space-between;
-      padding: 14px 28px;
-      background: rgba(15, 16, 20, 0.95);
-      backdrop-filter: blur(10px);
-      border-bottom: 1px solid #1f222e;
-      gap: 15px;
-    }
-
-    .logo {
-      font-size: 26px;
-      font-weight: 700;
-      color: #e50914;
-      letter-spacing: 1px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      cursor: pointer;
-    }
-
-    .search-box {
-      display: flex;
-      align-items: center;
-      background: #191c26;
-      border: 1px solid #2b3040;
-      border-radius: 25px;
-      padding: 6px 16px;
-      width: 100%;
-      max-width: 380px;
-      transition: 0.3s ease;
-    }
-
-    .search-box:focus-within {
-      border-color: #e50914;
-      box-shadow: 0 0 10px rgba(229, 9, 20, 0.3);
-    }
-
-    .search-box input {
-      background: transparent;
-      border: none;
-      outline: none;
-      color: #fff;
-      font-size: 14px;
-      width: 100%;
-    }
-
-    /* Category Filter Pills */
-    .categories {
-      display: flex;
-      gap: 10px;
-      padding: 15px 28px;
-      overflow-x: auto;
-      scrollbar-width: none;
-    }
-
-    .categories::-webkit-scrollbar {
-      display: none;
-    }
-
-    .cat-btn {
-      background: #191c26;
-      border: 1px solid #2b3040;
-      color: #a0a5b8;
-      padding: 8px 18px;
-      border-radius: 20px;
-      font-size: 13px;
-      font-weight: 600;
-      cursor: pointer;
-      white-space: nowrap;
-      transition: 0.25s ease;
-    }
-
-    .cat-btn:hover, .cat-btn.active {
-      background: #e50914;
-      color: #fff;
-      border-color: #e50914;
-      box-shadow: 0 4px 15px rgba(229, 9, 20, 0.4);
-    }
-
-    /* Hero Banner */
-    .hero-banner {
-      position: relative;
-      margin: 10px 28px 25px;
-      height: 380px;
-      border-radius: 16px;
-      overflow: hidden;
-      display: flex;
-      align-items: flex-end;
-      background: linear-gradient(180deg, rgba(15,16,20,0) 0%, rgba(15,16,20,0.95) 100%),
-                  url('https://images.unsplash.com/photo-1574375927938-d5a98e8ffe85?w=1600&auto=format&fit=crop&q=80') center/cover no-repeat;
-      border: 1px solid #1f222e;
-    }
-
-    .hero-content {
-      padding: 30px;
-      max-width: 650px;
-    }
-
-    .hero-tag {
-      background: #e50914;
-      color: #fff;
-      padding: 4px 10px;
-      font-size: 11px;
-      font-weight: 700;
-      border-radius: 4px;
-      text-transform: uppercase;
-      display: inline-block;
-      margin-bottom: 8px;
-    }
-
-    .hero-title {
-      font-size: 32px;
-      font-weight: 700;
-      line-height: 1.2;
-      margin-bottom: 8px;
-    }
-
-    .hero-desc {
-      font-size: 13px;
-      color: #b0b3c2;
-      margin-bottom: 15px;
-      line-height: 1.5;
-    }
-
-    .btn-play {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      background: #e50914;
-      color: #fff;
-      border: none;
-      padding: 10px 22px;
-      font-size: 14px;
-      font-weight: 600;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: 0.2s;
-    }
-
-    .btn-play:hover {
-      background: #b80710;
-      transform: scale(1.03);
-    }
-
-    /* Content Grid */
-    .section-title {
-      padding: 0 28px;
-      font-size: 20px;
-      font-weight: 600;
-      margin-bottom: 14px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .grid-container {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
-      gap: 18px;
-      padding: 0 28px 40px;
-    }
-
-    .card {
-      background: #161822;
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body { background: #08080a; color: #ffffff; padding: 20px; text-align: center; }
+    h1 { color: #00ffcc; text-shadow: 0 0 10px rgba(0,255,204,0.4); margin-bottom: 5px; font-size: 26px; }
+    p.subtitle { color: #888; font-size: 14px; margin-bottom: 20px; }
+    
+    /* प्लेयर स्क्रीन */
+    .screen-container {
+      max-width: 900px;
+      margin: 0 auto 25px auto;
+      background: #000;
+      border: 2px solid #1a1a24;
       border-radius: 12px;
       overflow: hidden;
-      cursor: pointer;
-      transition: transform 0.25s ease, box-shadow 0.25s ease;
-      position: relative;
-      border: 1px solid #232738;
-      display: flex;
-      flex-direction: column;
+      box-shadow: 0 0 20px rgba(0,0,0,0.8);
     }
-
-    .card:hover {
-      transform: translateY(-6px);
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.7);
-      border-color: #e50914;
-    }
-
-    .card-thumb {
-      position: relative;
+    .video-frame {
       width: 100%;
-      height: 240px;
-      background: #202433;
-    }
-
-    .card-thumb img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    .card-badge {
-      position: absolute;
-      top: 8px;
-      left: 8px;
-      background: rgba(0, 0, 0, 0.75);
-      backdrop-filter: blur(4px);
-      color: #ffcc00;
-      font-size: 11px;
-      font-weight: 600;
-      padding: 2px 7px;
-      border-radius: 4px;
-      border: 1px solid rgba(255, 204, 0, 0.3);
-    }
-
-    .card-quality {
-      position: absolute;
-      top: 8px;
-      right: 8px;
-      background: #e50914;
-      color: #fff;
-      font-size: 10px;
-      font-weight: 700;
-      padding: 2px 6px;
-      border-radius: 4px;
-    }
-
-    .card-info {
-      padding: 12px;
-      display: flex;
-      flex-direction: column;
-      flex-grow: 1;
-      justify-content: space-between;
-    }
-
-    .card-title {
-      font-size: 14px;
-      font-weight: 600;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      margin-bottom: 4px;
-    }
-
-    .card-meta {
-      font-size: 11px;
-      color: #8c91a4;
-      display: flex;
-      justify-content: space-between;
-    }
-
-    /* Player Modal */
-    .modal {
-      display: none;
-      position: fixed;
-      inset: 0;
-      z-index: 999;
-      background: rgba(0, 0, 0, 0.9);
-      backdrop-filter: blur(8px);
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-    }
-
-    .modal.active {
-      display: flex;
-    }
-
-    .modal-box {
-      background: #14161f;
-      border: 1px solid #282d3f;
-      border-radius: 16px;
-      width: 100%;
-      max-width: 820px;
-      overflow: hidden;
-      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.9);
-      position: relative;
-    }
-
-    .modal-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 14px 20px;
-      border-bottom: 1px solid #232738;
-    }
-
-    .modal-title {
-      font-size: 17px;
-      font-weight: 600;
-      color: #fff;
-    }
-
-    .btn-close {
-      background: #232738;
+      height: 480px;
       border: none;
-      color: #fff;
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      font-size: 16px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .btn-close:hover {
-      background: #e50914;
-    }
-
-    .video-player-frame {
-      width: 100%;
-      height: 420px;
+      display: block;
       background: #000;
     }
 
-    .video-player-frame video, .video-player-frame iframe {
-      width: 100%;
-      height: 100%;
+    /* मूवी कार्ड्स ग्रिड */
+    .media-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 15px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .card {
+      background: #12131a;
+      border: 1px solid #232433;
+      border-radius: 8px;
+      padding: 12px;
+      cursor: pointer;
+      transition: transform 0.2s, border-color 0.2s;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .card:hover, .card:focus {
+      transform: translateY(-4px);
+      border-color: #00ffcc;
+      outline: none;
+    }
+    .card h3 { font-size: 15px; margin-bottom: 6px; color: #fff; }
+    .badges { display: flex; justify-content: center; gap: 6px; }
+    .badge {
+      font-size: 11px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: #1f2233;
+      color: #00ffcc;
+      border: 1px solid rgba(0,255,204,0.3);
+    }
+    .badge.red { color: #ff3366; border-color: rgba(255,51,102,0.3); }
+
+    /* कस्टम यूआरएल बॉक्स */
+    .custom-bar {
+      margin-top: 30px;
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      max-width: 700px;
+      margin-inline: auto;
+    }
+    input {
+      flex: 1;
+      padding: 10px 14px;
+      background: #12131a;
+      border: 1px solid #232433;
+      border-radius: 6px;
+      color: #fff;
+      outline: none;
+    }
+    button {
+      padding: 10px 20px;
+      background: #00ffcc;
+      color: #000;
       border: none;
-    }
-
-    .modal-desc {
-      padding: 16px 20px;
-      font-size: 13px;
-      color: #b0b4c3;
-      line-height: 1.6;
-    }
-
-    @media (max-width: 768px) {
-      header {
-        padding: 12px 16px;
-      }
-      .categories, .section-title, .grid-container {
-        padding-left: 16px;
-        padding-right: 16px;
-      }
-      .hero-banner {
-        margin: 10px 16px 20px;
-        height: 280px;
-      }
-      .hero-title {
-        font-size: 22px;
-      }
-      .video-player-frame {
-        height: 240px;
-      }
-      .grid-container {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 12px;
-      }
-      .card-thumb {
-        height: 190px;
-      }
+      font-weight: bold;
+      border-radius: 6px;
+      cursor: pointer;
     }
   </style>
 </head>
 <body>
 
-  <!-- Top Bar -->
-  <header>
-    <div class="logo" onclick="setCategory('all')">
-      <span>🍿</span> StreamBox
-    </div>
-    <div class="search-box">
-      <input type="text" id="searchInput" placeholder="मूवी, सीरीज़ या एनीमे खोजें..." oninput="handleSearch()">
-    </div>
-  </header>
+  <h1>⚡ StreamBox TV Console</h1>
+  <p class="subtitle">एंटी-पॉपअप और डायरेक्ट स्ट्रीम सपोर्ट</p>
 
-  <!-- Categories -->
-  <div class="categories">
-    <button class="cat-btn active" onclick="setCategory('all', this)">🔥 All Trending</button>
-    <button class="cat-btn" onclick="setCategory('movie', this)">🎬 Movies</button>
-    <button class="cat-btn" onclick="setCategory('webseries', this)">🍿 Web Series</button>
-    <button class="cat-btn" onclick="setCategory('anime', this)">⚔️ Anime (Action)</button>
-    <button class="cat-btn" onclick="setCategory('kids', this)">🧸 Kids & Family</button>
-  </div>
-
-  <!-- Hero Featured Banner -->
-  <div class="hero-banner" id="heroBanner">
-    <div class="hero-content">
-      <span class="hero-tag">Special Premiere</span>
-      <h1 class="hero-title">Demon Slayer: Infinity Castle</h1>
-      <p class="hero-desc">डेमन स्लेयर कॉर्प्स मुज़ान किबुत्सुजी के खिलाफ़ अपने सबसे बड़े और आखिरी महायुद्ध के लिए इनफिनिटी कैसल में प्रवेश करता है।</p>
-      <button class="btn-play" onclick="playMedia('Demon Slayer: Infinity Castle', 'https://www.youtube.com/embed/VQGCKyvzIM4?autoplay=1', 'डेमन स्लेयर कॉर्प्स मुज़ान किबुत्सुजी के खिलाफ़ अपने सबसे बड़े और आखिरी महायुद्ध के लिए इनफिनिटी कैसल में प्रवेश करता है।')">
-        ▶ अभी प्ले करें
-      </button>
+  <div class="screen-container" id="playerContainer">
+    <div style="height:480px; display:flex; align-items:center; justify-content:center; color:#555;">
+      नीचे दी गई सूची में से टाइटल चुनें
     </div>
   </div>
 
-  <!-- Content Section -->
-  <div class="section-title" id="gridTitle">
-    <span>🔥</span> ट्रेंडिंग टाइटल्स
-  </div>
-  <div class="grid-container" id="mediaGrid"></div>
-
-  <!-- Media Player Modal -->
-  <div class="modal" id="playerModal">
-    <div class="modal-box">
-      <div class="modal-header">
-        <div class="modal-title" id="modalMediaTitle">Playing Title</div>
-        <button class="btn-close" onclick="closePlayer()">✕</button>
+  <div class="media-grid">
+    <div class="card" tabindex="0" onclick="playSelected('hanuman')">
+      <h3>हनुमान अंश</h3>
+      <div class="badges">
+        <span class="badge">1080p</span>
+        <span class="badge red">Hindi/Multi</span>
       </div>
-      <div class="video-player-frame" id="playerContainer"></div>
-      <div class="modal-desc" id="modalMediaDesc">Description details go here.</div>
     </div>
+
+    <div class="card" tabindex="0" onclick="playSelected('narsimha')">
+      <h3>महा अवतार नरसिम्हा</h3>
+      <div class="badges">
+        <span class="badge">1080p</span>
+        <span class="badge red">Hindi/Multi</span>
+      </div>
+    </div>
+
+    <div class="card" tabindex="0" onclick="playSelected('jailer2')">
+      <h3>जेलर 2</h3>
+      <div class="badges">
+        <span class="badge">1080p</span>
+        <span class="badge red">Multi</span>
+      </div>
+    </div>
+
+    <div class="card" tabindex="0" onclick="playSelected('alice')">
+      <h3>Alice in Borderland</h3>
+      <div class="badges">
+        <span class="badge">1080p</span>
+        <span class="badge">Dual Audio</span>
+      </div>
+    </div>
+
+    <div class="card" tabindex="0" onclick="playSelected('wednesday')">
+      <h3>Wednesday</h3>
+      <div class="badges">
+        <span class="badge">1080p</span>
+        <span class="badge">Dual Audio</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- कोई अन्य लिंक तुरंत चलाने के लिए -->
+  <div class="custom-bar">
+    <input type="text" id="manualUrl" placeholder="अन्य डायरेक्ट वीडियो / एम्बेड लिंक डालें...">
+    <button onclick="playCustom()">चलाएं</button>
   </div>
 
   <script>
-    // इनबिल्ट डेटाबेस (0% Dependency, 0% 401 Error)
-    const mediaDatabase = [
-      {
-        id: 1,
-        title: "Demon Slayer",
-        category: "anime",
-        year: "2024",
-        rating: "8.7",
-        quality: "4K DUB",
-        poster: "https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=600&auto=format&fit=crop&q=80",
-        videoUrl: "https://www.youtube.com/embed/VQGCKyvzIM4?autoplay=1",
-        desc: "तंजीरो और उसके साथी राक्षसों के खिलाफ़ अपनी लड़ाई जारी रखते हैं। अल्ट्रा HD हिंदी/जापानी ऑडियो में।"
-      },
-      {
-        id: 2,
-        title: "Jujutsu Kaisen",
-        category: "anime",
-        year: "2023",
-        rating: "8.6",
-        quality: "1080p",
-        poster: "https://images.unsplash.com/photo-1534447677768-be436bb09401?w=600&auto=format&fit=crop&q=80",
-        videoUrl: "https://www.youtube.com/embed/pkZXflCcqjM?autoplay=1",
-        desc: "युजी इतादोरी शापित आत्माओं की दुनिया में कदम रखता है। शिबुया इंसीडेंट का धमाकेदार एक्शन।"
-      },
-      {
-        id: 3,
-        title: "Attack on Titan",
-        category: "anime",
-        year: "2023",
-        rating: "9.1",
-        quality: "HD",
-        poster: "https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?w=600&auto=format&fit=crop&q=80",
-        videoUrl: "https://www.youtube.com/embed/M_OauHnAFc8?autoplay=1",
-        desc: "मानवता और विशालकाय टाइटन्स के बीच की अंतिम जंग। एरेन येगर का आखिरी मिशन।"
-      },
-      {
-        id: 4,
-        title: "Stranger Things",
-        category: "webseries",
-        year: "2024",
-        rating: "8.7",
-        quality: "4K HDR",
-        poster: "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=600&auto=format&fit=crop&q=80",
-        videoUrl: "https://www.youtube.com/embed/b9EkMc79ZSU?autoplay=1",
-        desc: "हॉकिन्स शहर के बच्चे और अपसाइड-डाउन की रहस्यमयी शक्तियां। रोमांच और सस्पेंस से भरपूर।"
-      },
-      {
-        id: 5,
-        title: "Money Heist",
-        category: "webseries",
-        year: "2022",
-        rating: "8.2",
-        quality: "1080p",
-        poster: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=600&auto=format&fit=crop&q=80",
-        videoUrl: "https://www.youtube.com/embed/_InqQJRqGW4?autoplay=1",
-        desc: "द प्रोफेसर और उसकी टीम का स्पेन के रॉयल मिंट में ऐतिहासिक डकैती का मास्टरप्लान।"
-      },
-      {
-        id: 6,
-        title: "The Dark Knight",
-        category: "movie",
-        year: "2008",
-        rating: "9.0",
-        quality: "4K DUB",
-        poster: "https://images.unsplash.com/photo-1509281373149-e957c6296406?w=600&auto=format&fit=crop&q=80",
-        videoUrl: "https://www.youtube.com/embed/EXeTwQWrcwY?autoplay=1",
-        desc: "गोथम शहर को जोकर के आतंक से बचाने के लिए बैटमैन की सबसे बड़ी अग्निपरीक्षा।"
-      },
-      {
-        id: 7,
-        title: "Interstellar",
-        category: "movie",
-        year: "2014",
-        rating: "8.7",
-        quality: "1080p",
-        poster: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600&auto=format&fit=crop&q=80",
-        videoUrl: "https://www.youtube.com/embed/zSWdZVtXT7E?autoplay=1",
-        desc: "मानव जाति के नए घर की खोज में अंतरिक्ष यात्रियों का समय और ब्लैकहोल के पार का सफर।"
-      },
-      {
-        id: 8,
-        title: "Spider-Man: Across Spider-Verse",
-        category: "kids",
-        year: "2023",
-        rating: "8.7",
-        quality: "4K",
-        poster: "https://images.unsplash.com/photo-1635805737707-575885ab0820?w=600&auto=format&fit=crop&q=80",
-        videoUrl: "https://www.youtube.com/embed/cqGjhVJWtEg?autoplay=1",
-        desc: "माइल्स मोरालेस मल्टीवर्स में बाकी स्पाइडर-हीरोज़ के साथ मिलकर नई चुनौती का सामना करता है।"
-      },
-      {
-        id: 9,
-        title: "Kung Fu Panda 4",
-        category: "kids",
-        year: "2024",
-        rating: "7.8",
-        quality: "HD DUB",
-        poster: "https://images.unsplash.com/photo-1534447677768-be436bb09401?w=600&auto=format&fit=crop&q=80",
-        videoUrl: "https://www.youtube.com/embed/km3s532h5No?autoplay=1",
-        desc: "ड्रैगन वॉरियर पो एक नया आध्यात्मिक नेता बनने की तैयारी करता है और गिरगिट रानी से लड़ता है।"
-      },
-      {
-        id: 10,
-        title: "Avengers: Endgame",
-        category: "movie",
-        year: "2019",
-        rating: "8.4",
-        quality: "4K DUB",
-        poster: "https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?w=600&auto=format&fit=crop&q=80",
-        videoUrl: "https://www.youtube.com/embed/TcMBFSGVi1c?autoplay=1",
-        desc: "थानोस द्वारा मिटाई गई आधी दुनिया को वापस लाने के लिए अवेंजर्स का आखिरी महा-संग्राम।"
+    // यहाँ अपने जुटाए गए डायरेक्ट वीडियो या एम्बेड लिंक्स पेस्ट करें:
+    const mediaVault = {
+      hanuman: "YOUR_HANUMAN_ANSH_LINK_HERE",
+      narsimha: "YOUR_NARSIMHA_LINK_HERE",
+      jailer2: "https://cdn.jsdelivr.net/npm/hls.js@latest",
+      alice: "YOUR_ALICE_IN_BORDERLAND_LINK_HERE",
+      wednesday: "YOUR_WEDNESDAY_LINK_HERE"
+    };
+
+    function renderPlayer(streamUrl) {
+      const container = document.getElementById('playerContainer');
+
+      // 1. अगर डायरेक्ट HLS (.m3u8) फाइल लिंक है:
+      if (streamUrl.includes('.m3u8')) {
+        container.innerHTML = '<video id="videoCore" class="video-frame" controls autoplay></video>';
+        const video = document.getElementById('videoCore');
+        if (Hls.isSupported()) {
+          const hls = new Hls();
+          hls.loadSource(streamUrl);
+          hls.attachMedia(video);
+        } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+          video.src = streamUrl;
+        }
+      } 
+      // 2. अगर डायरेक्ट MP4 फाइल लिंक है:
+      else if (streamUrl.includes('.mp4') || streamUrl.includes('.mkv')) {
+        container.innerHTML = `<video class="video-frame" controls autoplay src="${streamUrl}"></video>`;
+      } 
+      // 3. अगर किसी साइट का एम्बेड प्लेयर लिंक है (पॉपअप रोकने वाला सैंडबॉक्स):
+      else {
+        container.innerHTML = `
+          <iframe 
+            class="video-frame" 
+            src="${streamUrl}" 
+            sandbox="allow-scripts allow-same-origin allow-forms allow-presentation" 
+            allow="autoplay; encrypted-media; fullscreen" 
+            allowfullscreen>
+          </iframe>`;
       }
-    ];
+    }
 
-    let currentCategory = 'all';
-
-    function renderMedia(items) {
-      const grid = document.getElementById('mediaGrid');
-      grid.innerHTML = '';
-
-      if (items.length === 0) {
-        grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; color: #7f8599; padding: 40px 0;">कोई परिणाम नहीं मिला। कृपया दूसरा नाम खोजें!</div>';
+    function playSelected(key) {
+      const url = mediaVault[key];
+      if (!url || url.startsWith("YOUR_")) {
+        alert("कृपया पहले कोड में इस टाइटल का लिंक जोड़ें।");
         return;
       }
-
-      items.forEach(item => {
-        const card = document.createElement('div');
-        card.className = 'card';
-        card.onclick = () => playMedia(item.title, item.videoUrl, item.desc);
-
-        card.innerHTML = `
-          <div class="card-thumb">
-            <img src="${item.poster}" alt="${item.title}" loading="lazy">
-            <span class="card-badge">★ ${item.rating}</span>
-            <span class="card-quality">${item.quality}</span>
-          </div>
-          <div class="card-info">
-            <div class="card-title">${item.title}</div>
-            <div class="card-meta">
-              <span>${item.year}</span>
-              <span style="text-transform: capitalize;">${item.category}</span>
-            </div>
-          </div>
-        `;
-        grid.appendChild(card);
-      });
+      renderPlayer(url);
     }
 
-    function setCategory(cat, element) {
-      currentCategory = cat;
-      document.querySelectorAll('.cat-btn').forEach(btn => btn.classList.remove('active'));
-      if (element) element.classList.add('active');
-
-      const title = document.getElementById('gridTitle');
-      if (cat === 'all') title.innerHTML = '<span>🔥</span> ट्रेंडिंग टाइटल्स';
-      else if (cat === 'movie') title.innerHTML = '<span>🎬</span> ब्लॉकबस्टर मूवीज़';
-      else if (cat === 'webseries') title.innerHTML = '<span>🍿</span> टॉप वेब सीरीज़';
-      else if (cat === 'anime') title.innerHTML = '<span>⚔️</span> पॉपुलर एनीमे';
-      else if (cat === 'kids') title.innerHTML = '<span>🧸</span> किड्स और फैमिली';
-
-      applyFilters();
+    function playCustom() {
+      const input = document.getElementById('manualUrl').value.trim();
+      if (input) renderPlayer(input);
     }
-
-    function handleSearch() {
-      applyFilters();
-    }
-
-    function applyFilters() {
-      const query = document.getElementById('searchInput').value.toLowerCase().trim();
-      let filtered = mediaDatabase;
-
-      if (currentCategory !== 'all') {
-        filtered = filtered.filter(item => item.category === currentCategory);
-      }
-
-      if (query !== '') {
-        filtered = filtered.filter(item => 
-          item.title.toLowerCase().includes(query) || 
-          item.desc.toLowerCase().includes(query)
-        );
-      }
-
-      renderMedia(filtered);
-    }
-
-    function playMedia(title, url, desc) {
-      document.getElementById('modalMediaTitle').innerText = title;
-      document.getElementById('modalMediaDesc').innerText = desc;
-      document.getElementById('playerContainer').innerHTML = `
-        <iframe src="${url}" allow="autoplay; encrypted-media; fullscreen" allowfullscreen></iframe>
-      `;
-      document.getElementById('playerModal').classList.add('active');
-    }
-
-    function closePlayer() {
-      document.getElementById('playerContainer').innerHTML = '';
-      document.getElementById('playerModal').classList.remove('active');
-    }
-
-    // पहली बार लोड करने पर सारा डेटा दिखाना
-    renderMedia(mediaDatabase);
   </script>
 </body>
 </html>
